@@ -24,30 +24,32 @@ const App = () => {
 
   const [searchTerm, setSearchTerm] = React.useState('');
 
+  //handleSearch is passed down as a callback function through the Search component
+  //It will return the search term to this components state
   const handleSearch = event => {
     setSearchTerm(event.target.value);
   };
 
-  const searchedStories = stories.filter(story => {
-    story.title.toLowerCase().includes(searchTerm.toLowerCase());
-  })
+  //searchedStories is a function passed down to the list component, which will
+  //then filter the results and display them through the mapping function
+  const searchedStories = stories.filter(story => 
+    story.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div>
       <h1>My Hacker Stories</h1>
 
-      <Search onSearch = {handleSearch}/>
+      <Search search={searchTerm} onSearch={handleSearch} />
 
       <hr />
 
-      <List 
-      list={searchedStories}
-      />
+      <List list={searchedStories} />
     </div>
   );
-}
+};
 
-const Search = (props) => {
+const Search = ({search, onSearch}) => {
 
   return (
     <div>
@@ -55,23 +57,26 @@ const Search = (props) => {
       <input 
         id="search" 
         type="text"
-        onChange={props.onSearch}
+        value={search}
+        onChange={onSearch}
       />
     </div>
   )
 }
 
-const List = (props) =>
- props.list.map(item => (
-      <div key={item.objectID}>
-        <span>
-          <a href={item.url}>{item.title}</a>
-        </span>
-        <span>{item.author}</span>
-        <span>{item.num_comments}</span>
-        <span>{item.points}</span>
-      </div>
-  )
+const List = ({ list }) => 
+    list.map(({ objectID, ...item }) => <Item key={objectID} item={item} />)
+
+
+const Item = ({ item }) => (
+  <div>
+    <span>
+      <a href={item.url}>{item.title}</a>
+    </span>
+    <span>{item.author}</span>
+    <span>{item.num_comments}</span>
+    <span>{item.points}</span>
+  </div>
 );
 
 export default App;
