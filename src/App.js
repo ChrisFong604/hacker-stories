@@ -1,8 +1,11 @@
 import './App.css';
 import React from 'react';
 
+import Search from './components/Search';
+import List from './components/List';
+import useSemiPersistentState from './useSemiPersistentState';
+
 const App = () => {
-  //Methods
   const stories = [
     {
       title: 'React',
@@ -22,7 +25,15 @@ const App = () => {
     },
   ];
 
-  const [searchTerm, setSearchTerm] = React.useState('');
+  const [searchTerm, setSearchTerm] = useSemiPersistentState('search', 'React');
+
+
+  /*
+    useEffect takes the first argument as side-effect; the function. 
+    Then the OPTIONAL second argument is a dependency array of variables. 
+    Here if searchTerm changes, then the useEffect will trigger the first 
+    argumentative function localStorage.getItem()
+  */
 
   //handleSearch is passed down as a callback function through the Search component
   //It will return the search term to this components state
@@ -48,35 +59,5 @@ const App = () => {
     </div>
   );
 };
-
-const Search = ({search, onSearch}) => {
-
-  return (
-    <div>
-       <label htmlFor="search">Search: </label>
-      <input 
-        id="search" 
-        type="text"
-        value={search}
-        onChange={onSearch}
-      />
-    </div>
-  )
-}
-
-const List = ({ list }) => 
-    list.map(({ objectID, ...item }) => <Item key={objectID} item={item} />)
-
-
-const Item = ({ item }) => (
-  <div>
-    <span>
-      <a href={item.url}>{item.title}</a>
-    </span>
-    <span>{item.author}</span>
-    <span>{item.num_comments}</span>
-    <span>{item.points}</span>
-  </div>
-);
 
 export default App;
